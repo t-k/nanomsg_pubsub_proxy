@@ -1,4 +1,4 @@
-gom "bitbucket.org/gdamore/mangos"
+gom "github.com/op/go-nanomsg"
 
 gom "github.com/pelletier/go-toml"
 

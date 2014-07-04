@@ -1,13 +1,10 @@
 package main
 
 import (
-	"bitbucket.org/gdamore/mangos"
-	"bitbucket.org/gdamore/mangos/protocol/pub"
-	"bitbucket.org/gdamore/mangos/protocol/sub"
-	"bitbucket.org/gdamore/mangos/transport/tcp"
 	"flag"
 	"fmt"
 	"github.com/dmarkham/pidfile"
+	"github.com/op/go-nanomsg"
 	"github.com/pelletier/go-toml"
 	"os"
 	"runtime"
@@ -117,22 +114,20 @@ func daemon(nochdir, noclose int) int {
 	return 0
 }
 
-func newPublisher() (socket mangos.Socket, err error) {
-	socket, err = pub.NewSocket()
+func newPublisher() (socket *nanomsg.PubSocket, err error) {
+	socket, err = nanomsg.NewPubSocket()
 	if err != nil {
 		return
 	}
-	socket.AddTransport(tcp.NewTransport())
 	return
 }
 
-func newSubscriber() (socket mangos.Socket, err error) {
-	socket, err = sub.NewSocket()
+func newSubscriber() (socket *nanomsg.SubSocket, err error) {
+	socket, err = nanomsg.NewSubSocket()
 	if err != nil {
 		return
 	}
-	socket.AddTransport(tcp.NewTransport())
-	socket.SetOption(mangos.OptionSubscribe, []byte(""))
+	err = socket.Subscribe("")
 	return
 }
 
@@ -149,13 +144,13 @@ func main() {
 
 	publisher, err := newPublisher()
 	if err != nil {
-		fmt.Println("NewSocket(): %v", err)
+		fmt.Println("newPublisher(): %v", err)
 		os.Exit(0)
 	}
 	defer publisher.Close()
-	err = publisher.Listen(pubEndpoint)
+	_, err = publisher.Bind(pubEndpoint)
 	if err != nil {
-		fmt.Println("publisher.Listen(): %v", err)
+		fmt.Println("publisher.Bind(): %v", err)
 		os.Exit(0)
 	}
 
@@ -165,16 +160,16 @@ func main() {
 		os.Exit(0)
 	}
 	defer subscriber.Close()
-	err = subscriber.Listen(subEndpoint)
+	_, err = subscriber.Bind(subEndpoint)
 	if err != nil {
-		fmt.Println("subscriber.Listen(): %v", err)
+		fmt.Println("subscriber.Bind(): %v", err)
 		os.Exit(0)
 	}
 
 	for {
-		msg, err := subscriber.Recv()
+		msg, err := subscriber.Recv(0)
 		if err == nil {
-			_ = publisher.Send(msg)
+			_, _ = publisher.Send(msg, 0)
 		}
 	}
 }
