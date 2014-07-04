@@ -21,4 +21,7 @@ gom build pubsub.go
 
 # custom config file path
 ./pubsub -c=/etc/nanomsg/pubsub_proxy.toml
+
+# Specify shared libraries path
+LD_LIBRARY_PATH=/usr/local/lib ./pubsub
 ```
