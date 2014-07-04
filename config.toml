@@ -1,0 +1,23 @@
+[development]
+pub_endpoint = "tcp://127.0.0.1:19018"
+sub_endpoint = "tcp://127.0.0.1:19019"
+pidfile = "/tmp/nanomsg.pid"
+maxprocs = 2
+
+[test]
+pub_endpoint = "tcp://127.0.0.1:19018"
+sub_endpoint = "tcp://127.0.0.1:19019"
+pidfile = "/tmp/nanomsg.pid"
+maxprocs = 1
+
+[staging]
+pub_endpoint = "tcp://127.0.0.1:19018"
+sub_endpoint = "tcp://127.0.0.1:19019"
+pidfile = "/tmp/nanomsg.pid"
+maxprocs = 1
+
+[production]
+pub_endpoint = "tcp://127.0.0.1:19018"
+sub_endpoint = "tcp://127.0.0.1:19019"
+pidfile = "/tmp/nanomsg.pid"
+maxprocs = 1

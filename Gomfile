@@ -1,0 +1,5 @@
+gom "bitbucket.org/gdamore/mangos"
+
+gom "github.com/pelletier/go-toml"
+
+gom "github.com/dmarkham/pidfile"
